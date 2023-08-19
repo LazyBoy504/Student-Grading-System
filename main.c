@@ -12,6 +12,11 @@ struct Marks
     float subject3;
     float subject4;
     float subject5;
+    char subject1Name[30];
+    char subject2Name[30];
+    char subject3Name[30];
+    char subject4Name[30];
+    char subject5Name[30];
     float gpa1;
     float gpa2;
     float gpa3;
@@ -46,6 +51,8 @@ float totalMarks = 500;
 // Function for login
 void loginInfo()
 {
+    system("cls");
+
     char username[8], password[8], c;
 
     int i = 0;
@@ -81,11 +88,17 @@ void loginInfo()
     if (strcmp(username, "admin") == 0 && strcmp(password, "admin") == 0)
     {
         printf("Login successful!\n");
+        printf("Press any key to goto the next page.\n");
+        getch();
+        mainMenu();
     }
 
     else
     {
         printf("Login failed. Invalid username or password.\n");
+        printf("Press any key to continue.\n");
+        getch();
+
         loginInfo();
     }
 }
@@ -97,9 +110,9 @@ void mainMenu()
 
     system("cls");
 
-    loginInfo();
+    // loginInfo();
 
-    system("cls");
+    // system("cls");
 
     do
     {
@@ -314,6 +327,40 @@ labelIntakeYear:
 
     int i = students.semester - 1;
 
+    flush("stdin");
+
+    for (int i = 0; students.marks->subject1Name[i] != '\0'; i++)
+    {
+        if ((students.marks->subject1Name[i] >= 65 && students.marks->subject1Name[i] <= 90) || (students.marks->subject1Name[i] >= 97 && students.marks->subject1Name[i] <= 122) || students.marks->subject1Name[i] == ' ')
+        {
+            continue;
+        }
+
+        else
+        {
+            printf("Please do not enter any digits or symbols.\n");
+        }
+    }
+
+    for (int i = 1; i <= 5; i++)
+    {
+        printf("\nEnter the name of subject %d : \n", i);
+        scanf("%[^\n]", &students.marks->subject1Name);
+
+        if ((students.marks->subject1Name[i] >= 65 && students.marks->subject1Name[i] <= 90) || (students.marks->subject1Name[i] >= 97 && students.marks->subject1Name[i] <= 122) || students.marks->subject1Name[i] == ' ')
+        {
+            continue;
+        }
+
+        else
+        {
+            printf("Please do not enter any digits or symbols.\n");
+            goto labelName;
+        }
+
+        strupr(students.marks->subject1Name);
+    }
+
 labelMarks:
     printf("Enter your marks of semester %d.\n", i + 1);
 
@@ -488,7 +535,6 @@ void showRecords()
             printf("\n Subject 3     : %.2f", students.marks[i].subject3);
             printf("\n Subject 4     : %.2f", students.marks[i].subject4);
             printf("\n Subject 5     : %.2f", students.marks[i].subject5);
-            printf("\n Subject 1     : %.2f", students.marks[i].subject1);
             printf("\n Gpa 1         : %.2f", students.marks[i].gpa1);
             printf("\n Gpa 2         : %.2f", students.marks[i].gpa2);
             printf("\n Gpa 3         : %.2f", students.marks[i].gpa3);
@@ -496,7 +542,7 @@ void showRecords()
             printf("\n Gpa 5         : %.2f", students.marks[i].gpa5);
             printf("\n Total Marks   : %.2f", students.marks[i].totalMarksObtained);
             printf("\n Total GPA     : %.2f", students.marks[i].totalGpa);
-            printf("\n Percentage    : %.2f %", students.marks[i].percentage);
+            printf("\n Percentage    : %.2f \%", students.marks[i].percentage);
             printf("\n ________________________________________\n");
         }
     }
@@ -524,6 +570,8 @@ void searchStudent()
         {
             matched = 1;
 
+            printf("\nSudent's record found.\n");
+
             printf("\n ________________________________________\n");
             printf("\n Student ID    : %d", students.studentID);
             printf("\n Name          : %s", students.name);
@@ -540,7 +588,6 @@ void searchStudent()
                 printf("\n Subject 3     : %.2f", students.marks[i].subject3);
                 printf("\n Subject 4     : %.2f", students.marks[i].subject4);
                 printf("\n Subject 5     : %.2f", students.marks[i].subject5);
-                printf("\n Subject 1     : %.2f", students.marks[i].subject1);
                 printf("\n Gpa 1         : %.2f", students.marks[i].gpa1);
                 printf("\n Gpa 2         : %.2f", students.marks[i].gpa2);
                 printf("\n Gpa 3         : %.2f", students.marks[i].gpa3);
@@ -554,9 +601,19 @@ void searchStudent()
         }
     }
 
+    /*if (students.studentID != studentID)
+    {
+        printf("Student ID of %d not found.\n", studentID);
+
+        if (students.semester != semester)
+        {
+            printf("Student ID of %d is not enrolled in %d semester.\n", studentID, semester);
+        }
+    }*/
+
     if (!matched)
     {
-        printf("\nStudent ID of %d not found.", studentID);
+        printf("\nStudent record not found.\n");
     }
 
     fclose(f1);
@@ -578,7 +635,12 @@ void editStudent()
         if (0 == size)
         {
             printf("File is empty\n");
-            // mainMenu();
+
+            getch();
+
+            printf("Press any key to continue.\n");
+
+            mainMenu();
         }
     }
 
@@ -599,7 +661,7 @@ void editStudent()
     if (matched == 0)
     {
         printf("Student ID not found.\n");
-        editStudent();
+        mainMenu();
     }
 
     rewind(f1);
@@ -740,49 +802,93 @@ void editStudent()
 // Function to delete student's record (case 6)
 void deleteStudentRecord()
 {
-    int studentID, matched = 0;
+    int studentID, matched = 0, size;
+    char confirm;
 
     f1 = fopen("StudentInfo.txt", "r");
     f2 = fopen("temp.txt", "w");
 
     printf("\n\n________________DELETE RECORDS________________\n\n");
 
-    if (f1 == NULL)
+    if (NULL != f1)
     {
-        fprintf(stderr, "Unable to open file.\n");
-        exit(0);
+        fseek(f1, 0, SEEK_END);
+        size = ftell(f1);
+
+        if (0 == size)
+        {
+            printf("No records found in file.\nPlease add records to delete.\n");
+            printf("Press any key to continue.\n");
+
+            getch();
+
+            mainMenu();
+        }
     }
+
+    // if (f1 == NULL)
+    // {
+    //     fprintf(stderr, "Unable to open file.\n");
+    //     exit(0);
+    // }
+
+    fseek(f1, 0, SEEK_SET);
 
     printf("Enter Student ID: ");
     scanf("%d", &studentID);
 
-    while (fread(&students, sizeof(students), 1, f1))
+    fflush(stdin);
+
+    printf("Are you sure you want to delete the record for Student ID %d? (Y/N): ", studentID);
+    scanf(" %c", &confirm);
+
+    if (confirm == 'Y' || confirm == 'y')
     {
-        if (students.studentID == studentID)
+        while (fread(&students, sizeof(students), 1, f1) == 1)
         {
-            matched = 1;
+            if (students.studentID == studentID)
+            {
+                matched = 1;
+            }
+            else
+            {
+                fwrite(&students, sizeof(students), 1, f2);
+            }
         }
 
-        else
+        /*while (fread(&students, sizeof(students), 1, f1) == 1)
         {
-            fwrite(&students, sizeof(students), 1, f2);
+            if (students.studentID == studentID)
+            {
+                matched = 1;
+            }
+
+            else
+            {
+                fwrite(&students, sizeof(students), 1, f2);
+            }
+        }*/
+
+        fclose(f1);
+        fclose(f2);
+
+        if (!matched)
+        {
+            printf("\nStudent ID of %d not found.", studentID);
+        }
+
+        if (matched)
+        {
+            remove("StudentInfo.txt");
+            rename("temp.txt", "StudentInfo.txt");
+
+            printf("\nRecord deleted succesfully\n");
         }
     }
 
-    fclose(f1);
-    fclose(f2);
-
-    if (!matched)
+    else
     {
-        printf("\nStudent ID of %d not found.", studentID);
-    }
-
-    if (matched)
-    {
-        remove("StudentInfo.txt");
-        rename("temp.txt", "StudentInfo.txt");
-
-        printf("\nRecord deleted succesfully\n");
+        printf("\nRecord deletion aborted.\n");
     }
 }
 
@@ -790,7 +896,7 @@ int main()
 {
     system("cls");
 
-    mainMenu();
+    loginInfo();
 
     return 0;
 }
