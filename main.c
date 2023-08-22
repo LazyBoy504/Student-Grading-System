@@ -105,6 +105,30 @@ void loginInfo()
     }
 }
 
+// Function to validate choice entered by user to access the menu items
+int vaildateChoice()
+{
+    int choice;
+    while (1)
+    {
+        printf("\n\nPlease enter your choice: ");
+
+        if (scanf("%d", &choice) == 1)
+        {
+            return choice;
+        }
+
+        else
+        {
+            printf("\nInvalid input. Please enter a valid option.\n\n");
+
+            // Clear the input buffer
+            while (getchar() != '\n')
+                ;
+        }
+    }
+}
+
 // Function to display main menu
 void mainMenu()
 {
@@ -125,8 +149,7 @@ void mainMenu()
         printf("\n 8. Exit");
         printf("\n\n ___________________________________________________________________\n");
 
-        printf("\n\nPlease enter your choice: ");
-        scanf("%d", &choice);
+        choice = vaildateChoice();
 
         switch (choice)
         {
@@ -165,8 +188,8 @@ void mainMenu()
 
         default:
             printf("\nPlease choose the correct options.\n");
-            getch();
             printf("Press any key to continue.\n");
+            getch();
             break;
         }
 
