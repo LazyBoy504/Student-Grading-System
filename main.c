@@ -371,6 +371,7 @@ labelPhoneNumber:
     if (scanf("%lld", &students.phoneNumber) != 1 || !validatePhoneNumber(students.phoneNumber))
     {
         printf("Invalid input. Please enter a valid 10-digit phone number.\n");
+
         // Clear the input buffer
         while (getchar() != '\n')
         {
@@ -476,13 +477,6 @@ labelMarks:
     printf("\nEnter marks in 5th subject : \n");
     scanf("%f", &students.marks[i].subject5);
 
-    // scanf("%f %f %f %f %f",
-    //       &students.marks[i].subject1,
-    //       &students.marks[i].subject2,
-    //       &students.marks[i].subject3,
-    //       &students.marks[i].subject4,
-    //       &students.marks[i].subject5);
-
     if (students.marks[i].subject1 >= 0 &&
         students.marks[i].subject1 <= 100 &&
         students.marks[i].subject2 >= 0 &&
@@ -539,8 +533,27 @@ void updateStudentPrevious()
 
     printf("\n\n________________UPDATE SEMESTER RECORDS________________\n\n");
 
-    printf("Enter Student ID.\n");
-    scanf("%d", &studentID);
+labelUpdateStudent:
+
+    printf("\nEnter Student ID: ");
+
+    if (scanf("%d", &studentID) != 1)
+    {
+        printf("\nInvalid input. Please enter a valid student ID.\n");
+
+        // Clear the input buffer
+        while (getchar() != '\n')
+        {
+        }
+        goto labelUpdateStudent;
+    }
+
+    if (studentID <= 0 || studentID >= 1000)
+    {
+        printf("\nPlease enter in the range from 1 to 999.\n");
+
+        goto labelUpdateStudent;
+    }
 
     f1 = fopen("StudentInfo.txt", "r");
     f2 = fopen("temp.txt", "w+");
@@ -557,7 +570,11 @@ void updateStudentPrevious()
     if (matched == 0)
     {
         printf("Student ID not found.\n");
-        updateStudentPrevious();
+        printf("Press any key to continue.\n");
+
+        getch();
+
+        mainMenu();
     }
 
     rewind(f1);
@@ -585,31 +602,31 @@ void updateStudentPrevious()
             printf("\n");
             fflush(stdin);
 
-            printf("Enter the name of 1st subject.\n");
+            printf("Enter the name of 1st subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject1Name);
 
             printf("\n");
             fflush(stdin);
 
-            printf("Enter the name of 2nd subject.\n");
+            printf("Enter the name of 2nd subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject2Name);
 
             printf("\n");
             fflush(stdin);
 
-            printf("Enter the name of 3rd subject.\n");
+            printf("Enter the name of 3rd subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject3Name);
 
             printf("\n");
             fflush(stdin);
 
-            printf("Enter the name of 4th subject.\n");
+            printf("Enter the name of 4th subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject4Name);
 
             printf("\n");
             fflush(stdin);
 
-            printf("Enter the name of 5th subject.\n");
+            printf("Enter the name of 5th subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject5Name);
 
             printf("\n");
@@ -675,6 +692,7 @@ void updateStudentPrevious()
     fflush(stdin);
 
     printf("Do you want to update another record ? (y/n)\n");
+    getchar();
     scanf("%c", &confirm);
 
     if (confirm == 'y' || confirm == 'Y')
@@ -702,13 +720,13 @@ void showRecords()
     while (fread(&students, sizeof(students), 1, f1))
     {
         printf("\n ________________________________________\n");
-        printf("\n Student ID    \t: %d", students.studentID);
-        printf("\n Name          \t: %s", students.name);
-        printf("\n Gender        \t: %c", students.gender);
-        printf("\n Faculty       \t: %s", students.faculty);
-        printf("\n Address       \t: %s", students.address);
-        printf("\n Phone Number  \t: %lld", students.phoneNumber);
-        printf("\n Joined Year   \t: %d", students.intakeYear);
+        printf("\n Student ID    \t\t: %d", students.studentID);
+        printf("\n Name          \t\t: %s", students.name);
+        printf("\n Gender        \t\t: %c", students.gender);
+        printf("\n Faculty       \t\t: %s", students.faculty);
+        printf("\n Address       \t\t: %s", students.address);
+        printf("\n Phone Number  \t\t: %lld", students.phoneNumber);
+        printf("\n Joined Year   \t\t: %d", students.intakeYear);
         printf("\n ________________________________________\n");
 
         for (int i = 0; i < students.semester; i++)
@@ -719,11 +737,11 @@ void showRecords()
             printf("\nSubject Name    | Marks \t | GPA ");
             printf("\n ________________________________________\n");
 
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
             printf("\n ________________________________________\n");
 
             printf("\n Total Marks   \t: %.2f", students.marks[i].totalMarksObtained);
@@ -745,8 +763,27 @@ void searchStudent()
 
     printf("\n\n________________SEARCH RECORDS________________\n\n");
 
-    printf("Enter Student ID: ");
-    scanf("%d", &studentID);
+labelSearchStudentID:
+
+    printf("\nEnter Student ID: ");
+
+    if (scanf("%d", &studentID) != 1)
+    {
+        printf("\nInvalid input. Please enter a valid student ID.\n");
+
+        // Clear the input buffer
+        while (getchar() != '\n')
+        {
+        }
+        goto labelSearchStudentID;
+    }
+
+    if (studentID <= 0 || studentID >= 1000)
+    {
+        printf("\nPlease enter in the range from 1 to 999.\n");
+
+        goto labelSearchStudentID;
+    }
 
     while (fread(&students, sizeof(students), 1, f1) > 0)
     {
@@ -754,19 +791,38 @@ void searchStudent()
         {
             printf("\nSudent's ID found.\n");
 
-            printf("\nEnter Semester you want to find: ");
-            scanf("%d", &semester);
+        labelSemester:
+
+            printf("\nEnter Semester you want to search: ");
+
+            if (scanf("%d", &semester) != 1)
+            {
+                printf("\nInvalid input.\n");
+
+                // Clear the input buffer
+                while (getchar() != '\n')
+                {
+                }
+                goto labelSemester;
+            }
+
+            if (semester <= 0 || semester > 8)
+            {
+                printf("\nPlease enter correct semester.\n");
+
+                goto labelSemester;
+            }
 
             int i = semester - 1;
 
             printf("\n ________________________________________\n");
-            printf("\n Student ID    : %d", students.studentID);
-            printf("\n Name          : %s", students.name);
-            printf("\n Gender        : %c", students.gender);
-            printf("\n Faculty       : %s", students.faculty);
-            printf("\n Address       : %s", students.address);
-            printf("\n Phone Number  : %lld", students.phoneNumber);
-            printf("\n Joined Year   : %d", students.intakeYear);
+            printf("\n Student ID    \t\t: %d", students.studentID);
+            printf("\n Name          \t\t: %s", students.name);
+            printf("\n Gender        \t\t: %c", students.gender);
+            printf("\n Faculty       \t\t: %s", students.faculty);
+            printf("\n Address       \t\t: %s", students.address);
+            printf("\n Phone Number  \t\t: %lld", students.phoneNumber);
+            printf("\n Joined Year   \t\t: %d", students.intakeYear);
             printf("\n ________________________________________\n");
 
             printf("\n              Semester : %d", semester);
@@ -794,6 +850,10 @@ void searchStudent()
     if (matched == 0)
     {
         printf("\nStudent's record not found.\n");
+        printf("Press any key to continue.");
+
+        getch();
+        mainMenu();
     }
 
     fclose(f1);
@@ -809,8 +869,27 @@ void editStudent()
     f1 = fopen("StudentInfo.txt", "r");
     f2 = fopen("temp.txt", "w+");
 
+labelEditStudentID:
+
     printf("\nEnter the student ID to edit:");
-    scanf("%d", &studentID);
+
+    if (scanf("%d", &studentID) != 1)
+    {
+        printf("\nInvalid input. Please enter a valid student ID.\n");
+
+        // Clear the input buffer
+        while (getchar() != '\n')
+        {
+        }
+        goto labelEditStudentID;
+    }
+
+    if (studentID <= 0 || studentID >= 1000)
+    {
+        printf("\nPlease enter in the range from 1 to 999.\n");
+
+        goto labelEditStudentID;
+    }
 
     while (fread(&students, sizeof(students), 1, f1))
     {
@@ -824,12 +903,16 @@ void editStudent()
     if (matched == 0)
     {
         printf("\nStudent ID not found.\n");
+        printf("Press any key to continue.\n");
+
+        getch();
+
         mainMenu();
     }
 
     rewind(f1);
 
-    while (fread(&students, sizeof(students), 1, f1) > 0)
+    while (fread(&students, sizeof(students), 1, f1))
     {
         if (students.studentID == studentID)
         {
@@ -970,13 +1053,6 @@ void editStudent()
             printf("\nEnter marks in 5th subject : \n");
             scanf("%f", &students.marks[i].subject5);
 
-            // scanf("%f %f %f %f %f",
-            //       &students.marks[i].subject1,
-            //       &students.marks[i].subject2,
-            //       &students.marks[i].subject3,
-            //       &students.marks[i].subject4,
-            //       &students.marks[i].subject5);
-
             if (students.marks[i].subject1 >= 0 &&
                 students.marks[i].subject1 <= 100 &&
                 students.marks[i].subject2 >= 0 &&
@@ -1071,12 +1147,31 @@ void deleteStudentRecord()
 
     fseek(f1, 0, SEEK_SET);
 
+labelDeleteStudentID:
+
     printf("Enter Student ID: ");
-    scanf("%d", &studentID);
+
+    if (scanf("%d", &studentID) != 1)
+    {
+        printf("\nInvalid input. Please enter a valid student ID.\n");
+
+        // Clear the input buffer
+        while (getchar() != '\n')
+        {
+        }
+        goto labelDeleteStudentID;
+    }
+
+    if (studentID <= 0 || studentID >= 1000)
+    {
+        printf("\nPlease enter in the range from 1 to 999.\n");
+
+        goto labelDeleteStudentID;
+    }
 
     fflush(stdin);
 
-    printf("\nAre you sure you want to delete the record for Student ID %d? (Y/N): ", studentID);
+    printf("\nAre you sure you want to delete the record for Student ID %d ? (y/n): ", studentID);
     scanf(" %c", &confirm);
 
     if (confirm == 'Y' || confirm == 'y')
@@ -1096,12 +1191,12 @@ void deleteStudentRecord()
         fclose(f1);
         fclose(f2);
 
-        if (!matched)
+        if (matched != 1)
         {
             printf("\nStudent ID of %d not found.", studentID);
         }
 
-        if (matched)
+        if (matched == 1)
         {
             remove("StudentInfo.txt");
             rename("temp.txt", "StudentInfo.txt");
@@ -1135,7 +1230,6 @@ void deleteAllRecords()
     else
     {
         printf("Your records are safe.\n");
-
         printf("Press any key to continue.\n");
 
         getch();
@@ -1149,8 +1243,8 @@ void exitProject()
 {
     system("cls");
     int i;
-    char thankYou[100] = "Thank You For Using This Software\n";
-    char end[100] = ("\nProgram terminated successfully.\n");
+    char thankYou[100] = "Thank You For Using This Student Grading Software\n";
+    char end[100] = ("\nProgram Terminated Successfully.\n");
 
     for (i = 0; i < strlen(thankYou); i++)
     {
