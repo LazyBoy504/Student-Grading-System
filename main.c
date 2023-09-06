@@ -1,3 +1,10 @@
+/*
+    STUDENT GRADING SYSTEM
+
+    Bachelor In Information Technology I/I
+*/
+
+// Header files
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,6 +35,7 @@ struct Marks
     float percentage;
     float averageMarks;
     float totalMarksObtained;
+    char remarks[10];
 };
 
 // Student structure
@@ -316,10 +324,6 @@ labelStudentID:
     // Number paxi Character enter garnu paryo vane use garne
     fflush(stdin);
 
-    printf("\nEnter Faculty: ");
-    scanf("%s", &students.faculty);
-    strupr(students.faculty);
-
 labelName:
 
     printf("\nEnter Name: ");
@@ -337,6 +341,28 @@ labelName:
         {
             printf("\nPlease do not enter any digits or symbols.\n");
             goto labelName;
+        }
+    }
+
+labelFaculty:
+
+    fflush(stdin);
+
+    printf("\nEnter Faculty: ");
+    scanf("%[^\n]", &students.faculty);
+    strupr(students.faculty);
+
+    for (int i = 0; students.faculty[i] != '\0'; i++)
+    {
+        if ((students.faculty[i] >= 65 && students.faculty[i] <= 90) || (students.faculty[i] >= 97 && students.faculty[i] <= 122) || students.faculty[i] == ' ')
+        {
+            continue;
+        }
+
+        else
+        {
+            printf("\nPlease do not enter any digits or symbols.\n");
+            goto labelFaculty;
         }
     }
 
@@ -402,7 +428,7 @@ labelPhoneNumber:
 
 labelIntakeYear:
 
-    printf("\nEnter Intake Year (2015 to 2022): ");
+    printf("\nEnter Intake Year (2016 to 2022): ");
 
     if (scanf("%d", &students.intakeYear) != 1)
     {
@@ -459,23 +485,52 @@ labelIntakeYear:
 
 labelMarks:
     printf("\nEnter your marks of semester %d: \n", i + 1);
+    printf("\nEnter marks in five subjects: \n");
 
-    printf("\nEnter marks in five subject : \n");
+    for (int j = 0; j < 5; j++)
+    {
+        float mark;
+        int validInput = 0;
 
-    printf("\nEnter marks in 1st subject : \n");
-    scanf("%f", &students.marks[i].subject1);
+        do
+        {
+            printf("\nEnter marks in subject %d: ", j + 1);
 
-    printf("\nEnter marks in 2nd subject : \n");
-    scanf("%f", &students.marks[i].subject2);
+            if (scanf("%f", &mark) == 1 && mark >= 0 && mark <= 100)
+            {
+                // Valid input, assign it to the corresponding subject
+                validInput = 1;
 
-    printf("\nEnter marks in 3rd subject : \n");
-    scanf("%f", &students.marks[i].subject3);
+                switch (j)
+                {
+                case 0:
+                    students.marks[i].subject1 = mark;
+                    break;
+                case 1:
+                    students.marks[i].subject2 = mark;
+                    break;
+                case 2:
+                    students.marks[i].subject3 = mark;
+                    break;
+                case 3:
+                    students.marks[i].subject4 = mark;
+                    break;
+                case 4:
+                    students.marks[i].subject5 = mark;
+                    break;
+                }
+            }
+            else
+            {
+                // Invalid input, clear the input buffer
+                while (getchar() != '\n')
+                    ;
 
-    printf("\nEnter marks in 4th subject : \n");
-    scanf("%f", &students.marks[i].subject4);
+                printf("Invalid input. Please enter a valid mark between 0 and 100.\n");
+            }
 
-    printf("\nEnter marks in 5th subject : \n");
-    scanf("%f", &students.marks[i].subject5);
+        } while (!validInput);
+    }
 
     if (students.marks[i].subject1 >= 0 &&
         students.marks[i].subject1 <= 100 &&
@@ -489,11 +544,21 @@ labelMarks:
         students.marks[i].subject5 <= 100)
     {
     }
-
     else
     {
-        printf("Invalid marks entered.\nMarks should be between 0 and 100.\nStudent record was not added.\n");
+        printf("Invalid marks entered.\nMarks should be between 0 and 100.\n");
         goto labelMarks;
+    }
+
+    strcpy(students.marks[i].remarks, "");
+
+    if (students.marks[i].subject1 < 32 || students.marks[i].subject2 < 32 || students.marks[i].subject3 < 32 || students.marks[i].subject4 < 32 || students.marks[i].subject5 < 32)
+    {
+        strcpy(students.marks[i].remarks, "FAIL");
+    }
+    else
+    {
+        strcpy(students.marks[i].remarks, "PASS");
     }
 
     students.marks[i].totalMarksObtained = students.marks[i].subject1 + students.marks[i].subject2 + students.marks[i].subject3 + students.marks[i].subject4 + students.marks[i].subject5;
@@ -533,6 +598,15 @@ void updateStudentPrevious()
 
     printf("\n\n________________UPDATE SEMESTER RECORDS________________\n\n");
 
+    f1 = fopen("StudentInfo.txt", "r");
+    f2 = fopen("temp.txt", "w+");
+
+    if (f1 == NULL)
+    {
+        printf("Unable to open file.\n");
+        exit(1);
+    }
+
 labelUpdateStudent:
 
     printf("\nEnter Student ID: ");
@@ -554,9 +628,6 @@ labelUpdateStudent:
 
         goto labelUpdateStudent;
     }
-
-    f1 = fopen("StudentInfo.txt", "r");
-    f2 = fopen("temp.txt", "w+");
 
     while (fread(&students, sizeof(students), 1, f1))
     {
@@ -595,7 +666,8 @@ labelUpdateStudent:
         {
             students.semester = students.semester + 1;
 
-            printf("You are adding in %d semester.\n", students.semester);
+            printf("\nStudent ID of %d found", studentID);
+            printf("\nYou are adding in %d semester.\n", students.semester);
 
             int i = students.semester - 1;
 
@@ -632,16 +704,53 @@ labelUpdateStudent:
             printf("\n");
 
         updateLabelMarks:
+            printf("\nEnter your marks of semester %d: \n", i + 1);
+            printf("\nEnter marks in five subjects: \n");
 
-            printf("Enter your marks of semester %d.\n", i + 1);
+            for (int j = 0; j < 5; j++)
+            {
+                float mark;
+                int validInput = 0;
 
-            printf("\nEnter marks in five subject : \n");
-            scanf("%f %f %f %f %f",
-                  &students.marks[i].subject1,
-                  &students.marks[i].subject2,
-                  &students.marks[i].subject3,
-                  &students.marks[i].subject4,
-                  &students.marks[i].subject5);
+                do
+                {
+                    printf("\nEnter marks in subject %d: ", j + 1);
+
+                    if (scanf("%f", &mark) == 1 && mark >= 0 && mark <= 100)
+                    {
+                        // Valid input, assign it to the corresponding subject
+                        validInput = 1;
+
+                        switch (j)
+                        {
+                        case 0:
+                            students.marks[i].subject1 = mark;
+                            break;
+                        case 1:
+                            students.marks[i].subject2 = mark;
+                            break;
+                        case 2:
+                            students.marks[i].subject3 = mark;
+                            break;
+                        case 3:
+                            students.marks[i].subject4 = mark;
+                            break;
+                        case 4:
+                            students.marks[i].subject5 = mark;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // Invalid input, clear the input buffer
+                        while (getchar() != '\n')
+                            ;
+
+                        printf("Invalid input. Please enter a valid mark between 0 and 100.\n");
+                    }
+
+                } while (!validInput);
+            }
 
             if (students.marks[i].subject1 >= 0 &&
                 students.marks[i].subject1 <= 100 &&
@@ -655,11 +764,21 @@ labelUpdateStudent:
                 students.marks[i].subject5 <= 100)
             {
             }
-
             else
             {
-                printf("Invalid marks entered.\nMarks should be between 0 and 100.\nStudent record was not added.\n");
+                printf("Invalid marks entered.\nMarks should be between 0 and 100.\n");
                 goto updateLabelMarks;
+            }
+
+            strcpy(students.marks[i].remarks, "");
+
+            if (students.marks[i].subject1 < 32 || students.marks[i].subject2 < 32 || students.marks[i].subject3 < 32 || students.marks[i].subject4 < 32 || students.marks[i].subject5 < 32)
+            {
+                strcpy(students.marks[i].remarks, "FAIL");
+            }
+            else
+            {
+                strcpy(students.marks[i].remarks, "PASS");
             }
 
             students.marks[i].totalMarksObtained = students.marks[i].subject1 + students.marks[i].subject2 + students.marks[i].subject3 + students.marks[i].subject4 + students.marks[i].subject5;
@@ -707,9 +826,10 @@ labelUpdateStudent:
 void showRecords()
 {
     int size = 0;
-    f1 = fopen("StudentInfo.txt", "r");
 
     printf("\n\n________________SHOW RECORDS________________\n\n");
+
+    f1 = fopen("StudentInfo.txt", "r");
 
     if (f1 == NULL)
     {
@@ -737,16 +857,17 @@ void showRecords()
             printf("\nSubject Name    | Marks \t | GPA ");
             printf("\n ________________________________________\n");
 
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
+            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
+            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
+            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
+            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
+            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
             printf("\n ________________________________________\n");
 
             printf("\n Total Marks   \t: %.2f", students.marks[i].totalMarksObtained);
             printf("\n Total GPA     \t: %.2f", students.marks[i].totalGpa);
             printf("\n Percentage    \t: %.2f %%", students.marks[i].percentage);
+            printf("\n Remarks       \t: %s", students.marks[i].remarks);
             printf("\n ________________________________________\n");
         }
     }
@@ -759,9 +880,15 @@ void searchStudent()
 {
     int studentID, semester, matched = 0;
 
+    printf("\n\n________________SEARCH RECORDS________________\n\n");
+
     f1 = fopen("StudentInfo.txt", "r");
 
-    printf("\n\n________________SEARCH RECORDS________________\n\n");
+    if (f1 == NULL)
+    {
+        printf("Unable to open file.\n");
+        exit(1);
+    }
 
 labelSearchStudentID:
 
@@ -831,16 +958,17 @@ labelSearchStudentID:
             printf("\nSubject Name    | Marks \t | GPA ");
             printf("\n ________________________________________\n");
 
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
-            printf("\n %-15s: %.2f \t\t :%.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
+            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
             printf("\n ________________________________________\n");
 
             printf("\n Total Marks   : %.2f", students.marks[i].totalMarksObtained);
             printf("\n Total GPA     : %.2f", students.marks[i].totalGpa);
             printf("\n Percentage    : %.2f %%", students.marks[i].percentage);
+            printf("\n Remarks       : %s", students.marks[i].remarks);
             printf("\n ________________________________________\n");
 
             matched = 1;
@@ -868,6 +996,12 @@ void editStudent()
 
     f1 = fopen("StudentInfo.txt", "r");
     f2 = fopen("temp.txt", "w+");
+
+    if (f1 == NULL)
+    {
+        printf("Unable to open file.\n");
+        exit(0);
+    }
 
 labelEditStudentID:
 
@@ -978,7 +1112,7 @@ labelEditStudentID:
 
         labelIntakeYear:
 
-            printf("\nEnter edited Intake Year (2015 to 2022): ");
+            printf("\nEnter edited Intake Year (2016 to 2022): ");
 
             if (scanf("%d", &students.intakeYear) != 1)
             {
@@ -1034,24 +1168,53 @@ labelEditStudentID:
             strupr(students.marks[i].subject5Name);
 
         labelMarks:
-            printf("\nEnter your edited marks of semester %d:\n", i + 1);
+            printf("\nEnter your marks of semester %d: \n", i + 1);
+            printf("\nEnter marks in five subjects: \n");
 
-            printf("\nEnter marks in five subject : \n");
+            for (int j = 0; j < 5; j++)
+            {
+                float mark;
+                int validInput = 0;
 
-            printf("\nEnter marks in 1st subject : \n");
-            scanf("%f", &students.marks[i].subject1);
+                do
+                {
+                    printf("\nEnter marks in subject %d: ", j + 1);
 
-            printf("\nEnter marks in 2nd subject : \n");
-            scanf("%f", &students.marks[i].subject2);
+                    if (scanf("%f", &mark) == 1 && mark >= 0 && mark <= 100)
+                    {
+                        // Valid input, assign it to the corresponding subject
+                        validInput = 1;
 
-            printf("\nEnter marks in 3rd subject : \n");
-            scanf("%f", &students.marks[i].subject3);
+                        switch (j)
+                        {
+                        case 0:
+                            students.marks[i].subject1 = mark;
+                            break;
+                        case 1:
+                            students.marks[i].subject2 = mark;
+                            break;
+                        case 2:
+                            students.marks[i].subject3 = mark;
+                            break;
+                        case 3:
+                            students.marks[i].subject4 = mark;
+                            break;
+                        case 4:
+                            students.marks[i].subject5 = mark;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // Invalid input, clear the input buffer
+                        while (getchar() != '\n')
+                            ;
 
-            printf("\nEnter marks in 4th subject : \n");
-            scanf("%f", &students.marks[i].subject4);
+                        printf("Invalid input. Please enter a valid mark between 0 and 100.\n");
+                    }
 
-            printf("\nEnter marks in 5th subject : \n");
-            scanf("%f", &students.marks[i].subject5);
+                } while (!validInput);
+            }
 
             if (students.marks[i].subject1 >= 0 &&
                 students.marks[i].subject1 <= 100 &&
@@ -1065,11 +1228,21 @@ labelEditStudentID:
                 students.marks[i].subject5 <= 100)
             {
             }
-
             else
             {
-                printf("Invalid marks entered.\nMarks should be between 0 and 100.\nStudent record was not added.\n");
+                printf("Invalid marks entered.\nMarks should be between 0 and 100.\n");
                 goto labelMarks;
+            }
+
+            strcpy(students.marks[i].remarks, "");
+
+            if (students.marks[i].subject1 < 32 || students.marks[i].subject2 < 32 || students.marks[i].subject3 < 32 || students.marks[i].subject4 < 32 || students.marks[i].subject5 < 32)
+            {
+                strcpy(students.marks[i].remarks, "FAIL");
+            }
+            else
+            {
+                strcpy(students.marks[i].remarks, "PASS");
             }
 
             students.marks[i].totalMarksObtained = students.marks[i].subject1 + students.marks[i].subject2 + students.marks[i].subject3 + students.marks[i].subject4 + students.marks[i].subject5;
@@ -1118,10 +1291,16 @@ void deleteStudentRecord()
     int studentID, matched = 0, size;
     char confirm;
 
+    printf("\n\n________________DELETE RECORDS________________\n\n");
+
     f1 = fopen("StudentInfo.txt", "r");
     f2 = fopen("temp.txt", "w");
 
-    printf("\n\n________________DELETE RECORDS________________\n\n");
+    if (f1 == NULL)
+    {
+        printf("Unable to open file.\n");
+        exit(1);
+    }
 
     if (NULL != f1)
     {
@@ -1138,12 +1317,6 @@ void deleteStudentRecord()
             mainMenu();
         }
     }
-
-    // if (f1 == NULL)
-    // {
-    //     printf("Unable to open file.\n");
-    //     exit(0);
-    // }
 
     fseek(f1, 0, SEEK_SET);
 
@@ -1224,6 +1397,8 @@ void deleteAllRecords()
     if (confirm == 'y' || confirm == 'Y')
     {
         remove("StudentInfo.txt");
+        remove("temp.txt");
+
         printf("All Records Deleted.\n");
     }
 
