@@ -2,6 +2,9 @@
     STUDENT GRADING SYSTEM
 
     Bachelor In Information Technology I/I
+
+    Project 1st
+
 */
 
 // Header files
@@ -199,7 +202,10 @@ void mainMenu()
         default:
             printf("\nPlease choose the correct options.\n");
             printf("Press any key to continue.\n");
+
             getch();
+
+            system("cls");
             break;
         }
 
@@ -589,6 +595,8 @@ labelMarks:
     }
 
     printf("\nStudent added successfully!\n");
+
+    mainMenu();
 }
 
 // Function to add new marks for new semester for the existing student ID (case 2)
@@ -676,30 +684,35 @@ labelUpdateStudent:
 
             printf("Enter the name of 1st subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject1Name);
+            strupr(students.marks[students.semester - 1].subject1Name);
 
             printf("\n");
             fflush(stdin);
 
             printf("Enter the name of 2nd subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject2Name);
+            strupr(students.marks[students.semester - 1].subject2Name);
 
             printf("\n");
             fflush(stdin);
 
             printf("Enter the name of 3rd subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject3Name);
+            strupr(students.marks[students.semester - 1].subject3Name);
 
             printf("\n");
             fflush(stdin);
 
             printf("Enter the name of 4th subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject4Name);
+            strupr(students.marks[students.semester - 1].subject4Name);
 
             printf("\n");
             fflush(stdin);
 
             printf("Enter the name of 5th subject: ");
             scanf("%[^\n]", &students.marks[students.semester - 1].subject5Name);
+            strupr(students.marks[students.semester - 1].subject5Name);
 
             printf("\n");
 
@@ -819,7 +832,7 @@ labelUpdateStudent:
         updateStudentPrevious();
     }
 
-    printf("Student updated successfully!\n");
+    printf("\nStudent updated successfully!\n");
 }
 
 // Function to display details of all students (case 3)
@@ -827,7 +840,7 @@ void showRecords()
 {
     int size = 0;
 
-    printf("\n\n________________SHOW RECORDS________________\n\n");
+    printf("\n\n___________________________SHOW RECORDS___________________________\n\n");
 
     f1 = fopen("StudentInfo.txt", "r");
 
@@ -839,40 +852,45 @@ void showRecords()
 
     while (fread(&students, sizeof(students), 1, f1))
     {
-        printf("\n ________________________________________\n");
-        printf("\n Student ID    \t\t: %d", students.studentID);
-        printf("\n Name          \t\t: %s", students.name);
-        printf("\n Gender        \t\t: %c", students.gender);
-        printf("\n Faculty       \t\t: %s", students.faculty);
-        printf("\n Address       \t\t: %s", students.address);
-        printf("\n Phone Number  \t\t: %lld", students.phoneNumber);
-        printf("\n Joined Year   \t\t: %d", students.intakeYear);
-        printf("\n ________________________________________\n");
+        printf("\n ________________________________________________________________\n");
+        printf("\n Student ID    \t\t\t: %d", students.studentID);
+        printf("\n Name          \t\t\t: %s", students.name);
+        printf("\n Gender        \t\t\t: %c", students.gender);
+        printf("\n Faculty       \t\t\t: %s", students.faculty);
+        printf("\n Address       \t\t\t: %s", students.address);
+        printf("\n Phone Number  \t\t\t: %lld", students.phoneNumber);
+        printf("\n Joined Year   \t\t\t: %d", students.intakeYear);
+        printf("\n ________________________________________________________________\n");
 
         for (int i = 0; i < students.semester; i++)
         {
-            printf("\n              Semester : %d", i + 1);
+            printf("\n              \t\tSemester : %d", i + 1);
             printf("\n");
 
-            printf("\nSubject Name    | Marks \t | GPA ");
-            printf("\n ________________________________________\n");
+            printf("\nSubject Name     \t\t| Marks \t\t| GPA ");
+            printf("\n ________________________________________________________________\n");
 
-            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
-            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
-            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
-            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
-            printf("\n %-15s: %.2f \t:%-10.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
-            printf("\n ________________________________________\n");
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
+            printf("\n ________________________________________________________________\n");
 
-            printf("\n Total Marks   \t: %.2f", students.marks[i].totalMarksObtained);
-            printf("\n Total GPA     \t: %.2f", students.marks[i].totalGpa);
-            printf("\n Percentage    \t: %.2f %%", students.marks[i].percentage);
-            printf("\n Remarks       \t: %s", students.marks[i].remarks);
-            printf("\n ________________________________________\n");
+            printf("\n Total Marks   \t\t\t: %.2f", students.marks[i].totalMarksObtained);
+            printf("\n Total GPA     \t\t\t: %.2f", students.marks[i].totalGpa);
+            printf("\n Percentage    \t\t\t: %.2f %%", students.marks[i].percentage);
+            printf("\n Remarks       \t\t\t: %s", students.marks[i].remarks);
+            printf("\n ________________________________________________________________\n");
         }
     }
 
     fclose(f1);
+
+    printf("Press any key to continue.\n");
+    getch();
+
+    mainMenu();
 }
 
 // Function to search student records (case 4)
@@ -942,45 +960,50 @@ labelSearchStudentID:
 
             int i = semester - 1;
 
-            printf("\n ________________________________________\n");
-            printf("\n Student ID    \t\t: %d", students.studentID);
-            printf("\n Name          \t\t: %s", students.name);
-            printf("\n Gender        \t\t: %c", students.gender);
-            printf("\n Faculty       \t\t: %s", students.faculty);
-            printf("\n Address       \t\t: %s", students.address);
-            printf("\n Phone Number  \t\t: %lld", students.phoneNumber);
-            printf("\n Joined Year   \t\t: %d", students.intakeYear);
-            printf("\n ________________________________________\n");
+            printf("\n ________________________________________________________________\n");
+            printf("\n Student ID    \t\t\t: %d", students.studentID);
+            printf("\n Name          \t\t\t: %s", students.name);
+            printf("\n Gender        \t\t\t: %c", students.gender);
+            printf("\n Faculty       \t\t\t: %s", students.faculty);
+            printf("\n Address       \t\t\t: %s", students.address);
+            printf("\n Phone Number  \t\t\t: %lld", students.phoneNumber);
+            printf("\n Joined Year   \t\t\t: %d", students.intakeYear);
+            printf("\n ________________________________________________________________\n");
 
-            printf("\n              Semester : %d", semester);
+            printf("\n              \t\tSemester : %d", i + 1);
             printf("\n");
 
-            printf("\nSubject Name    | Marks \t | GPA ");
-            printf("\n ________________________________________\n");
+            printf("\nSubject Name     \t\t| Marks \t\t| GPA ");
+            printf("\n ________________________________________________________________\n");
 
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
-            printf("\n %-15s: %.2f \t :%.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
-            printf("\n ________________________________________\n");
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject1Name, students.marks[i].subject1, students.marks[i].gpa1);
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject2Name, students.marks[i].subject2, students.marks[i].gpa2);
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject3Name, students.marks[i].subject3, students.marks[i].gpa3);
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject4Name, students.marks[i].subject4, students.marks[i].gpa4);
+            printf("\n %-31s: %.2f \t\t:%-10.2f", students.marks[i].subject5Name, students.marks[i].subject5, students.marks[i].gpa5);
+            printf("\n ________________________________________________________________\n");
 
-            printf("\n Total Marks   : %.2f", students.marks[i].totalMarksObtained);
-            printf("\n Total GPA     : %.2f", students.marks[i].totalGpa);
-            printf("\n Percentage    : %.2f %%", students.marks[i].percentage);
-            printf("\n Remarks       : %s", students.marks[i].remarks);
-            printf("\n ________________________________________\n");
+            printf("\n Total Marks   \t\t\t: %.2f", students.marks[i].totalMarksObtained);
+            printf("\n Total GPA     \t\t\t: %.2f", students.marks[i].totalGpa);
+            printf("\n Percentage    \t\t\t: %.2f %%", students.marks[i].percentage);
+            printf("\n Remarks       \t\t\t: %s", students.marks[i].remarks);
+            printf("\n ________________________________________________________________\n");
 
             matched = 1;
+
+            printf("Press any key to continue.");
+            getch();
         }
     }
 
     if (matched == 0)
     {
         printf("\nStudent's record not found.\n");
-        printf("Press any key to continue.");
-
+        printf("\nPress any key to continue.");
         getch();
+
+        system("cls");
+
         mainMenu();
     }
 
@@ -1283,6 +1306,8 @@ labelEditStudentID:
     }
 
     printf("\nStudent edited successfully!\n");
+
+    mainMenu();
 }
 
 // Function to delete student's record (case 6)
@@ -1375,6 +1400,11 @@ labelDeleteStudentID:
             rename("temp.txt", "StudentInfo.txt");
 
             printf("\nRecord deleted succesfully\n");
+
+            printf("\nPress any key to continue.");
+            getch();
+
+            mainMenu();
         }
     }
 
@@ -1399,13 +1429,18 @@ void deleteAllRecords()
         remove("StudentInfo.txt");
         remove("temp.txt");
 
-        printf("All Records Deleted.\n");
+        printf("\nAll Records Deleted.\n");
+
+        printf("\nPress any key to continue.\n");
+        getch();
+
+        mainMenu();
     }
 
     else
     {
-        printf("Your records are safe.\n");
-        printf("Press any key to continue.\n");
+        printf("\nYour records are safe.\n");
+        printf("\nPress any key to continue.\n");
 
         getch();
 
@@ -1436,10 +1471,33 @@ void exitProject()
     exit(0);
 }
 
+/* Just for fun
+ // Function to show welcome message
+void startProject()
+{
+    system("cls");
+    int i;
+    char welcome[100] = "Welcome to Student Grading Software\n";
+
+    for (i = 0; i < strlen(welcome); i++)
+    {
+        printf("%c", welcome[i]);
+        Sleep(20);
+    }
+
+    printf("press any key to continue using this system.\n");
+    getch();
+
+    loginInfo();
+
+}*/
+
 // Main function (Entry point)
 int main()
 {
     system("cls");
+
+    // startProject();
 
     loginInfo();
 
